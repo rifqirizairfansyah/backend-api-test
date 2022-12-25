@@ -1,0 +1,11 @@
+{
+  "name": "backend-upscalix-test",
+  "version": "1.0.0",
+  "description": "upscalix test backend API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rifqi riza irfansyah",
+  "license": "ISC"
+}
