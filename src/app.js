@@ -9,8 +9,6 @@ const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const mongo = require("./database/mongo");
 const routes = require("./routes");
-const parseAppType = require("./middlewares/app_type");
-const bearerToken = require("./middlewares/bearer_token");
 const { cors } = require("./config");
 const logger = require("./utils/logger");
 const { requestResponse } = require("./utils/index");
@@ -40,8 +38,6 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(swaggerDocument)
 );
-app.use(bearerToken());
-app.use(parseAppType());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
