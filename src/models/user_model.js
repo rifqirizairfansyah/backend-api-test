@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema(
     FIRST_NAME: String,
     LAST_NAME: String,
     BIRTHDAY: String,
-    LOCATION: String
+    LOCATION: String,
+    JOB_ID: String
   },
   {
     versionKey: false,

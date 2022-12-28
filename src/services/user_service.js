@@ -1,7 +1,7 @@
 const User = require("../models/user_model");
 const { getTime } = require("date-fns");
 const { requestResponse, toTitleCase } = require("../utils");
-const { createNewOrder } = require("../queque/order-queue")
+const { createNewOrder, removeOrder } = require("../queque/order-queue")
 
 let response;
 /**
@@ -30,7 +30,8 @@ const registerUser = async (first_name, last_name, birthday, location) => {
   };
 
   await User.create(payload);
-  await createNewOrder(payload, location, date)
+  const getId = await User.findOne(payload, { _id: true, FIRST_NAME: false, LAST_NAME: false, BIRTHDAY: false, LOCATION: false})
+  await createNewOrder(payload, location, date, getId.id)
   return { ...requestResponse.success };
 };
 
@@ -61,8 +62,19 @@ const findUserByFirstnameOrLastname = async (first_name, last_name) => {
  * @param {String} conditions
  * @returns {Promise<Document>}
  */
-const deleteUser = (conditions) => {
-  return User.deleteOne(conditions);
+const deleteUser = async (id) => {
+  const user = await User.findOne({_id: id});
+
+  if (user === null) {
+    response = { ...requestResponse.unprocessable_entity };
+    response.message = "User not found";
+
+    return response;
+  }
+  removeOrder(user._id)
+  User.deleteOne({_id: user._id});
+
+  return { ...requestResponse.success } 
 };
 
 

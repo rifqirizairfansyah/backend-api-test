@@ -22,27 +22,36 @@ orderQueue.on('stalled', handlerStalled);
  * @returns {Promise<{code: number, message: string, status: boolean}>}
  */
 
-const createNewOrder = (user, timezone, date) => {
+const createNewOrder = async (user, timezone, date, id) => {
   const offsetZone = getTimezoneOffset(timezone)
   const day = getDate(date)
   const month = getMonth(date) + 1
-
-  orderQueue.add({
+  await orderQueue.add({
     user,
     timezone,
     date
   }, {
+    jobId: id,
     attempts: 3,
-    backoff: 3600000, 
+    backoff: 3600000,
+    removeOnComplete: true,
     removeOnFail: false,
     repeat: { 
-      cron: `00 09 ${day} ${month} *`,
+      // cron: `00 09 ${day} ${month} *`,
+      cron: `* * * * *`,
       offset: offsetZone,
       tz: timezone
     }
   });
 };
 
+const removeOrder = async (key) => {
+  const repeatableJobs = await orderQueue.getRepeatableJobs()
+  const jobWithId = repeatableJobs.filter(job => job.key.includes(key))[0];
+  if (jobWithId) await orderQueue.removeRepeatableByKey(jobWithId.key);
+}
+
 module.exports = {
-  createNewOrder
+  createNewOrder,
+  removeOrder
 }

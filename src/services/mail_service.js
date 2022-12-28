@@ -1,4 +1,4 @@
-const Mailer = require('../utils/axios')
+const { instance } = require('../utils/axios')
 const { requestResponse } = require("../utils");
 
 let response;
@@ -10,7 +10,7 @@ let response;
  */
 const sendMail = async (profile) => {
   const { FIRST_NAME, LAST_NAME } = profile
-  Mailer().post('/send-mail', { email, message: `Hey, ${FIRST_NAME} ${LAST_NAME} it’s your birthday!` })
+  instance.post('/send-email', { email: `rifqibatch@gmail.com`, message: `Hey, ${FIRST_NAME} ${LAST_NAME} it’s your birthday!` })
   return { ...requestResponse.success };
 };
 

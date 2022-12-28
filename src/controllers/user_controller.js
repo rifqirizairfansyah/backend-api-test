@@ -27,9 +27,9 @@ const destroy = async (req, res) => {
       _id: id
     };
 
-    await userService.deleteUser(conditions);
+    const deleteUser = await userService.deleteUser(conditions);
 
-    response = { ...requestResponse.success };
+    response = { ...deleteUser };
   } catch (error) {
     logger.error(error);
     response = { ...requestResponse.server_error };

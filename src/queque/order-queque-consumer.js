@@ -6,8 +6,8 @@ const ordersProcess = async (job) => {
 }
 
 const handlerCompleted = (job) => {
-  mailService.sendMail(job.data.user)
-  logger.info(`Job in ${job.queue.name} completed for: ${job.data.user.FIRST_NAME} ${job.data.user.LAST_NAME} on zone ${job.data.user.LOCATION}`)
+  // mailService.sendMail(job.data.user)
+  logger.info(`Job in ${job.queue.name} completed send mail for: ${job.data.user.FIRST_NAME} ${job.data.user.LAST_NAME} on zone ${job.data.user.LOCATION}`)
 }
 
 const handlerFailure = (job, err) => {
