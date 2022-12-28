@@ -18,5 +18,5 @@ const createConnection = async () => {
 };
 
 module.exports = {
-  createConnection
+  createConnection,
 };

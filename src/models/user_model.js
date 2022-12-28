@@ -9,11 +9,11 @@ const userSchema = new mongoose.Schema(
     LAST_NAME: String,
     BIRTHDAY: String,
     LOCATION: String,
-    TYPE: String
+    TYPE: String,
   },
   {
     versionKey: false,
-    collection: collectionName
+    collection: collectionName,
   }
 );
 

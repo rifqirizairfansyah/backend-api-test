@@ -1,4 +1,4 @@
-const { instance } = require('../utils/axios')
+const { instance } = require("../utils/axios");
 const { requestResponse } = require("../utils");
 
 let response;
@@ -9,9 +9,12 @@ let response;
  * @returns {Promise<{code: number, message: string, status: boolean}>}
  */
 const sendMail = async (profile) => {
-  const { FIRST_NAME, LAST_NAME, TYPE } = profile
-  try {   
-    instance.post('/send-email', { emai: `rifqibatch@gmail.com`, message: `Hey, ${FIRST_NAME} ${LAST_NAME} it’s your ${TYPE}! ` })
+  const { FIRST_NAME, LAST_NAME, TYPE } = profile;
+  try {
+    await instance.post("/send-email", {
+      emai: `rifqibatch@gmail.com`,
+      message: `Hey, ${FIRST_NAME} ${LAST_NAME} it’s your ${TYPE}! `,
+    });
     return { ...requestResponse.success };
   } catch (error) {
     return { ...requestResponse.server_error };
@@ -19,5 +22,5 @@ const sendMail = async (profile) => {
 };
 
 module.exports = {
-  sendMail
+  sendMail,
 };

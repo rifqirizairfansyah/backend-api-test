@@ -1,7 +1,7 @@
 const User = require("../models/user_model");
 const { getTime } = require("date-fns");
 const { requestResponse, toTitleCase } = require("../utils");
-const { createNewOrder, removeOrder } = require("../queque/order-queue")
+const { createNewOrder, removeOrder } = require("../queque/order-queue");
 
 let response;
 /**
@@ -10,9 +10,14 @@ let response;
  * @param {String} email, password, name
  * @returns {Promise<{code: number, message: string, status: boolean}>}
  */
-const registerUser = async (first_name, last_name, birthday, location, type) => {
-
-  const user = await findUserByFirstnameOrLastname(first_name, last_name);
+const registerUser = async (
+  first_name,
+  last_name,
+  birthday,
+  location,
+  type
+) => {
+  const user = await findUserByFirstnameAndLastname(first_name, last_name);
 
   if (user !== null) {
     response = { ...requestResponse.unprocessable_entity };
@@ -21,18 +26,24 @@ const registerUser = async (first_name, last_name, birthday, location, type) => 
     return response;
   }
 
-  const date = getTime(new Date(birthday))
+  const date = getTime(new Date(birthday));
   const payload = {
     FIRST_NAME: first_name,
     LAST_NAME: last_name,
     BIRTHDAY: date,
     LOCATION: location,
-    TYPE: type
+    TYPE: type,
   };
 
   await User.create(payload);
-  const getId = await User.findOne(payload, { _id: true, FIRST_NAME: false, LAST_NAME: false, BIRTHDAY: false, LOCATION: false})
-  await createNewOrder(payload, location, date, getId.id)
+  const getId = await User.findOne(payload, {
+    _id: true,
+    FIRST_NAME: false,
+    LAST_NAME: false,
+    BIRTHDAY: false,
+    LOCATION: false,
+  });
+  await createNewOrder(payload, location, date, getId.id);
   return { ...requestResponse.success };
 };
 
@@ -42,13 +53,10 @@ const registerUser = async (first_name, last_name, birthday, location, type) => 
  * @param {String} email
  * @returns {Promise<Document>}
  */
-const findUserByFirstnameOrLastname = async (first_name, last_name) => {
+const findUserByFirstnameAndLastname = async (first_name, last_name) => {
   const user = await User.findOne(
     {
-      $and: [
-        { FIRST_NAME: first_name },
-        { LAST_NAME: last_name }
-      ]
+      $and: [{ FIRST_NAME: first_name }, { LAST_NAME: last_name }],
     },
     { _id: false },
     { lean: true }
@@ -64,7 +72,7 @@ const findUserByFirstnameOrLastname = async (first_name, last_name) => {
  * @returns {Promise<Document>}
  */
 const deleteUser = async (id) => {
-  const user = await User.findOne({_id: id});
+  const user = await User.findOne({ _id: id });
 
   if (user === null) {
     response = { ...requestResponse.unprocessable_entity };
@@ -72,14 +80,13 @@ const deleteUser = async (id) => {
 
     return response;
   }
-  removeOrder(user._id)
-  await User.deleteOne({_id: user._id});
+  removeOrder(user._id);
+  await User.deleteOne({ _id: user._id });
 
-  return { ...requestResponse.success } 
+  return { ...requestResponse.success };
 };
-
 
 module.exports = {
   registerUser,
-  deleteUser
+  deleteUser,
 };
