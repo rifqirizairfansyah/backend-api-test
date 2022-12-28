@@ -10,8 +10,12 @@ let response;
  */
 const sendMail = async (profile) => {
   const { FIRST_NAME, LAST_NAME, TYPE } = profile
-  instance.post('/send-email', { email: `rifqibatch@gmail.com`, message: `Hey, ${FIRST_NAME} ${LAST_NAME} it’s your ${TYPE}! ` })
-  return { ...requestResponse.success };
+  try {   
+    instance.post('/send-email', { emai: `rifqibatch@gmail.com`, message: `Hey, ${FIRST_NAME} ${LAST_NAME} it’s your ${TYPE}! ` })
+    return { ...requestResponse.success };
+  } catch (error) {
+    return { ...requestResponse.server_error };
+  }
 };
 
 module.exports = {

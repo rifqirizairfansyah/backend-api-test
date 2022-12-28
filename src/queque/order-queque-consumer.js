@@ -2,13 +2,15 @@ const logger = require("../utils/logger");
 const mailService = require("../services/mail_service")
 
 const ordersProcess = async (job, jobDone) => {
-  const sendMail  = await mailService.sendMail(job.data.user)
-  if (sendMail.code !== 200) {
-    console.log("fail job")
-    job.fail()
+  try {
+    const sendMail  = await mailService.sendMail(job.data.user)
+    console.log(sendMail)
+    logger.info(`${job.data.user.FIRST_NAME} ${job.data.user.LAST_NAME}`)
+    jobDone();
+  } catch (error) {
+    job.moveToFailed()
+    logger.error(`${job.id}`)
   }
-  logger.info(`${job.data.user.FIRST_NAME} ${job.data.user.LAST_NAME}`)
-  jobDone();
 }
 
 const handlerCompleted = (job) => {
