@@ -10,7 +10,7 @@ let response;
  * @param {String} email, password, name
  * @returns {Promise<{code: number, message: string, status: boolean}>}
  */
-const registerUser = async (first_name, last_name, birthday, location) => {
+const registerUser = async (first_name, last_name, birthday, location, type) => {
 
   const user = await findUserByFirstnameOrLastname(first_name, last_name);
 
@@ -27,6 +27,7 @@ const registerUser = async (first_name, last_name, birthday, location) => {
     LAST_NAME: last_name,
     BIRTHDAY: date,
     LOCATION: location,
+    TYPE: type
   };
 
   await User.create(payload);
@@ -72,7 +73,7 @@ const deleteUser = async (id) => {
     return response;
   }
   removeOrder(user._id)
-  User.deleteOne({_id: user._id});
+  await User.deleteOne({_id: user._id});
 
   return { ...requestResponse.success } 
 };

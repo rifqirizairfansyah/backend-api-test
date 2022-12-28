@@ -7,9 +7,9 @@ const {
 let response;
 
 const create = async (req, res) => {
-  const { first_name, last_name, birthday, location } = req.body;
+  const { first_name, last_name, birthday, location, type } = req.body;
   try {
-    const user = await userService.registerUser(first_name, last_name, birthday, location);
+    const user = await userService.registerUser(first_name, last_name, birthday, location, type);
     response = { ...user };
   } catch (error) {
     logger.error(error);

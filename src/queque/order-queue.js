@@ -26,6 +26,7 @@ const createNewOrder = async (user, timezone, date, id) => {
   const offsetZone = getTimezoneOffset(timezone)
   const day = getDate(date)
   const month = getMonth(date) + 1
+
   await orderQueue.add({
     user,
     timezone,
@@ -37,8 +38,7 @@ const createNewOrder = async (user, timezone, date, id) => {
     removeOnComplete: true,
     removeOnFail: false,
     repeat: { 
-      // cron: `00 09 ${day} ${month} *`,
-      cron: `* * * * *`,
+      cron: `00 09 ${day} ${month} *`,
       offset: offsetZone,
       tz: timezone
     }

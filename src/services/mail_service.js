@@ -9,8 +9,8 @@ let response;
  * @returns {Promise<{code: number, message: string, status: boolean}>}
  */
 const sendMail = async (profile) => {
-  const { FIRST_NAME, LAST_NAME } = profile
-  instance.post('/send-email', { email: `rifqibatch@gmail.com`, message: `Hey, ${FIRST_NAME} ${LAST_NAME} it’s your birthday!` })
+  const { FIRST_NAME, LAST_NAME, TYPE } = profile
+  instance.post('/send-email', { email: `rifqibatch@gmail.com`, message: `Hey, ${FIRST_NAME} ${LAST_NAME} it’s your ${TYPE}! ` })
   return { ...requestResponse.success };
 };
 
