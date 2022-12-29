@@ -1,15 +1,13 @@
 const logger = require("../utils/logger");
 const mailService = require("../services/mail_service");
 
-const ordersProcess = async (job, jobDone) => {
+const ordersProcess = async (job) => {
   try {
     await mailService.sendMail(job.data.user);
     logger.info(`${job.data.user.FIRST_NAME} ${job.data.user.LAST_NAME}`);
-    jobDone();
   } catch (error) {
-    console.log(error);
-    job.moveToFailed();
-    logger.error(`error`);
+    await job.moveToFailed(new Error("my error message"), error, false);
+    logger.error(error);
   }
 };
 

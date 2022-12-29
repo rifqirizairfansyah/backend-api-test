@@ -11,13 +11,14 @@ let response;
 const sendMail = async (profile) => {
   const { FIRST_NAME, LAST_NAME, TYPE } = profile;
   try {
-    await instance.post("/send-emai", {
-      emai: `${FIRST_NAME}${LAST_NAME}@gmail.com`,
+    await instance.post("/send-email", {
+      email: `${FIRST_NAME}@gmail.com`,
       message: `Hey, ${FIRST_NAME} ${LAST_NAME} it’s your ${TYPE}! `,
     });
     return { ...requestResponse.success };
   } catch (error) {
-    return { ...requestResponse.server_error };
+    console.log(error);
+    throw new Error(error);
   }
 };
 

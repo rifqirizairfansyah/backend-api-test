@@ -21,7 +21,7 @@ const registerUser = async (
 
   if (user !== null) {
     response = { ...requestResponse.unprocessable_entity };
-    response.message = "E-mail already registered";
+    response.message = "User already registered";
 
     return response;
   }

@@ -1,4 +1,5 @@
 require("dotenv").config();
+const logger = require("../utils/logger");
 const Queque = require("bull");
 const {
   ordersProcess,
@@ -44,8 +45,7 @@ const createNewOrder = async (user, timezone, date, id) => {
       removeOnComplete: true,
       removeOnFail: false,
       repeat: {
-        cron: `* * * * *`,
-        // cron: `00 09 ${day} ${month} *`,
+        cron: `00 09 ${day} ${month} *`,
         offset: offsetZone,
         tz: timezone,
       },
