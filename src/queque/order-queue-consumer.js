@@ -3,12 +3,13 @@ const mailService = require("../services/mail_service");
 
 const ordersProcess = async (job, jobDone) => {
   try {
-    const sendMail = await mailService.sendMail(job.data.user);
+    await mailService.sendMail(job.data.user);
     logger.info(`${job.data.user.FIRST_NAME} ${job.data.user.LAST_NAME}`);
     jobDone();
   } catch (error) {
+    console.log(error);
     job.moveToFailed();
-    logger.error(`${job.id}`);
+    logger.error(`error`);
   }
 };
 

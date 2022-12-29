@@ -11,8 +11,8 @@ let response;
 const sendMail = async (profile) => {
   const { FIRST_NAME, LAST_NAME, TYPE } = profile;
   try {
-    await instance.post("/send-email", {
-      emai: `rifqibatch@gmail.com`,
+    await instance.post("/send-emai", {
+      emai: `${FIRST_NAME}${LAST_NAME}@gmail.com`,
       message: `Hey, ${FIRST_NAME} ${LAST_NAME} it’s your ${TYPE}! `,
     });
     return { ...requestResponse.success };
