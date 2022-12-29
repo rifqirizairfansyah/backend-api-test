@@ -78,44 +78,44 @@ const checkRequiredProperties = (requiredProperties, properties) => {
   return valid;
 };
 
-
 const requiredRequest = {
-  profile_update: { body: ["guid", "company"] },
-  admin_login: { body: ["email", "password"] }
+  users_register: {
+    body: ["first_name", "last_name", "birthday", "location", "type"],
+  },
 };
 
 const requestResponse = {
   success: {
     code: 200,
     status: true,
-    message: "Success."
+    message: "Success.",
   },
   incomplete_body: {
     code: 400,
     status: false,
-    message: "Bad request. Please check your request data."
+    message: "Bad request. Please check your request data.",
   },
   unauthorized: {
     code: 401,
     status: false,
     message:
-      "E-mail or password does not match, or you are not authorized to accessing this page."
+      "E-mail or password does not match, or you are not authorized to accessing this page.",
   },
   not_found: {
     code: 404,
     status: false,
-    message: "Resource not found"
+    message: "Resource not found",
   },
   unprocessable_entity: {
     code: 422,
     status: false,
-    message: "The request you sent is unable to process"
+    message: "The request you sent is unable to process",
   },
   server_error: {
     code: 500,
     status: true,
-    message: "Internal server error. Please contact the administrator."
-  }
+    message: "Internal server error. Please contact the administrator.",
+  },
 };
 
 module.exports = {
@@ -123,5 +123,5 @@ module.exports = {
   toTitleCase,
   checkRequiredProperties,
   requestResponse,
-  requiredRequest
+  requiredRequest,
 };
