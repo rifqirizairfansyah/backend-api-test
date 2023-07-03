@@ -30,8 +30,9 @@ const destroy = async (req, res) => {
     };
 
     const deleteUser = await userService.deleteUser(conditions);
+    schedulerService.deleteScheduleEvent(deleteUser.FIRST_NAME)
 
-    response = { ...deleteUser };
+    response = { ...requestResponse.success };
   } catch (error) {
     logger.error(error);
     response = { ...requestResponse.server_error };

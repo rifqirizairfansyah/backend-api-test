@@ -80,10 +80,10 @@ const deleteUser = async (id) => {
 
     return response;
   }
-  removeOrder(user._id);
+  
   await User.deleteOne({ _id: user._id });
 
-  return { ...requestResponse.success };
+  return { user };
 };
 
 module.exports = {

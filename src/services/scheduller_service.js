@@ -1,7 +1,7 @@
 const User = require("../models/user_model");
 const { getTime } = require("date-fns");
 const { requestResponse, toTitleCase } = require("../utils");
-const { createBirthdayRule } = require("../queque/aws-scheduller");
+const { createBirthdayRule, deleteBirthdayRule } = require("../queque/aws-scheduller");
 
 const scheduleEvent = async (
   first_name,
@@ -18,6 +18,19 @@ const scheduleEvent = async (
   }
 };
 
+const deleteScheduleEvent = async (
+  first_name
+) => {
+  try {
+    await deleteBirthdayRule(first_name);
+    
+    return { ...requestResponse.success };
+  } catch (error) {
+    return { ...requestResponse.unprocessable_entity };
+  }
+};
+
 module.exports = {
-  scheduleEvent
+  scheduleEvent,
+  deleteScheduleEvent
 };

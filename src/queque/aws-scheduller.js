@@ -1,4 +1,4 @@
-const { SchedulerClient, CreateScheduleCommand } = require("@aws-sdk/client-scheduler");
+const { SchedulerClient, CreateScheduleCommand, DeleteScheduleCommand } = require("@aws-sdk/client-scheduler");
 const { getDate, getMonth, parseISO } = require("date-fns");
 const logger = require("../utils/logger");
 
@@ -37,7 +37,23 @@ const createBirthdayRule = async (firstName, birthday, timezone) => {
     );
 };
 
+const deleteBirthdayRule = async (firstName) => {
+  const ruleName = `birthday_${firstName}`;
+
+  const command = new DeleteScheduleCommand({
+    Name: ruleName,
+  });
+
+  try {
+    await client.send(command);
+    logger.info(`Success deleting the scheduler with rule name ${ruleName}`);
+  } catch (error) {
+    logger.error(`Error deleting the scheduler: ${error.message}`);
+    throw error;
+  }
+};
 
 module.exports = {
-  createBirthdayRule
+  createBirthdayRule,
+  deleteBirthdayRule
 }
