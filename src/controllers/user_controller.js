@@ -10,9 +10,8 @@ let response;
 const create = async (req, res) => {
   const { first_name, last_name, birthday, location, type } = req.body;
   try {
-    schedulerService.scheduleEvent(first_name, birthday, location)
     const user = await userService.registerUser(first_name, last_name, birthday, location, type);
-
+    schedulerService.scheduleEvent(first_name, birthday, location)
     response = { ...user };
   } catch (error) {
     logger.error(error);

@@ -9,6 +9,8 @@ provider:
   memorySize: 256
   timeout: 15
 
+plugins:
+  - serverless-dotenv-plugin
 # you can add statements to the Lambda function's IAM Role here
 #  iam:
 #    role:
@@ -54,16 +56,16 @@ functions:
     environment:
       NODE_ENV: development
       PORT: 5026
-      MONGO_DEV: mongodb+srv://admin:admin@developmentdatabase.6twbbjd.mongodb.net/?retryWrites=true&w=majority
-      MONGO_PROD: mongodb+srv://admin:admin@developmentdatabase.6twbbjd.mongodb.net/?retryWrites=true&w=majority
-      REDIS_HOST: redis-19949.c292.ap-southeast-1-1.ec2.cloud.redislabs.com
-      REDIS_PORT: 19949
-      REDIS_USERNAME: default
-      REDIS_PASSWORD: wcP9VpuCt8eEMoIVSsME7zQgVozVyYf8
-      MAIL_PRODUCTIONS: https://email-service.digitalenvision.com.au
-      MAIL_DEV: https://email-service.digitalenvision.com.au
-      SMTP_USERNAME: dashawn.haley54@ethereal.email
-      SMTP_PASSWORD: vq7pKfBj8AbCy5qZmC
+      MONGO_DEV: ${env:MONGO_DEV}
+      MONGO_PROD: ${env:MONGO_PROD}
+      REDIS_HOST:  ${env:REDIS_HOST}
+      REDIS_PORT: ${env:REDIS_PORT}
+      REDIS_USERNAME: ${env:REDIS_USERNAME}
+      REDIS_PASSWORD: ${env:REDIS_PASSWORD}
+      MAIL_PRODUCTIONS: ${env:MAIL_PRODUCTIONS}
+      MAIL_DEV: ${env:MAIL_DEV}
+      SMTP_USERNAME: ${env:SMTP_USERNAME}
+      SMTP_PASSWORD: ${env:SMTP_PASSWORD}
   
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

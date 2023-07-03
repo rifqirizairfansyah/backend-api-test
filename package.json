@@ -35,5 +35,8 @@
     "swagger-ui-express": "^4.6.0",
     "uuid": "^9.0.0",
     "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "serverless-dotenv-plugin": "^6.0.0"
   }
 }

@@ -1,7 +1,6 @@
 const User = require("../models/user_model");
 const { getTime } = require("date-fns");
 const { requestResponse, toTitleCase } = require("../utils");
-const { createNewOrder, removeOrder } = require("../queque/order-queue");
 const { createBirthdayRule } = require("../queque/aws-scheduller");
 
 const scheduleEvent = async (
