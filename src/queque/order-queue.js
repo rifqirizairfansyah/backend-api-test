@@ -10,9 +10,16 @@ const {
 const { format, getTimezoneOffset } = require("date-fns-tz");
 const { getDate, getMonth } = require("date-fns");
 
-const orderQueue = new Queque("email", {
-  redis: process.env.REDIS_URL,
-});
+const redisConfig = {
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    username: process.env.REDIS_USERNAME,
+    password: process.env.REDIS_PASSWORD,
+  },
+};
+
+const orderQueue = new Queque("email", redisConfig);
 
 orderQueue.process(ordersProcess);
 orderQueue.on("failed", handlerFailure);
@@ -32,6 +39,7 @@ const createNewOrder = async (user, timezone, date, id) => {
   const day = getDate(date);
   const month = getMonth(date) + 1;
 
+  
   await orderQueue.add(
     {
       user,
@@ -59,7 +67,12 @@ const removeOrder = async (key) => {
   if (jobWithId) await orderQueue.removeRepeatableByKey(jobWithId.key);
 };
 
+const closeConnection = async (key) => {
+  return await orderQueue.close();
+}
+
 module.exports = {
   createNewOrder,
   removeOrder,
+  closeConnection
 };

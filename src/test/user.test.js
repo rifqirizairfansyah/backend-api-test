@@ -1,37 +1,85 @@
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let server = require('../app');
+const { registerUser } = require('../services/user_service'); 
+const User = require('../models/user_model');
+const { createNewOrder, closeConnection } = require('../queque/order-queue');
 
-chai.use(chaiHttp)
-chai.should()
+jest.mock('../models/user_model'); 
+jest.mock('../queque/order-queue'); 
 
-describe("/users", () => {
-  it ("it should be create new users", (done) => {
-    const users = {
-      first_name: "rifqi riza",
-      last_name: "irfansyah",
-      birthday: "2022-12-27",
-      location: "Europe/Rome"
-    }
+describe('registerUser', () => {
+  beforeEach(() => {
+    User.findOne.mockClear();
+    User.create.mockClear();
+    User.findOne.mockResolvedValue(null);
+    createNewOrder.mockClear();
+  });
 
-    chai.request(server).post("/users").send(users).end((err, res) => {
-      res.should.have.status(200);
-      res.body.should.be.a("object")
-      done()
-    })
-  })
-})
+  afterEach(async () => {
+    await closeConnection();
+  });
 
-describe("/users/:id", () => {
-  it ("it should be DELETE user by Name", (done) => {
-    const id = "63ab292a2aa32459c8ac2d4d";
-    chai
-      .request(server)
-      .delete("/users/" + id)
-      .end((err, res) => {
-        res.should.have.status(200);
-        res.body.should.be.a("object")
-        done()
-     })
-  })
-})
+  it('should register a new user and create an order', async () => {
+    const payload = {
+      first_name: 'John',
+      last_name: 'Doe',
+      birthday: '1990-01-01',
+      location: 'Asia/Jakarta',
+      type: 'Birthday',
+    };
+  
+    User.findOne.mockResolvedValue(null);
+    User.create.mockResolvedValue({});
+    const mockCreateNewOrder = jest.fn();
+    createNewOrder.mockImplementation(mockCreateNewOrder);
+  
+    await registerUser(
+      payload.first_name,
+      payload.last_name,
+      payload.birthday,
+      payload.location,
+      payload.type
+    );
+  
+    expect(User.findOne).toHaveBeenCalledWith(
+      {
+        $and: [{ FIRST_NAME: payload.first_name }, { LAST_NAME: payload.last_name }],
+      },
+      { _id: false },
+      { lean: true }
+    );
+  
+    expect(User.create).toHaveBeenCalledWith({
+      FIRST_NAME: payload.first_name,
+      LAST_NAME: payload.last_name,
+      BIRTHDAY: expect.any(Number),
+      LOCATION: payload.location,
+      TYPE: payload.type,
+    });
+  });
+
+  it('should return an error response if the user is already registered', async () => {
+    const payload = {
+      first_name: 'John',
+      last_name: 'Doe',
+      birthday: '1990-01-01',
+      location: 'New York',
+      type: 'customer',
+    };
+
+    User.findOne.mockResolvedValue({});
+
+    const result = await registerUser(
+      payload.first_name,
+      payload.last_name,
+      payload.birthday,
+      payload.location,
+      payload.type
+    );
+
+    expect(User.findOne).toHaveBeenCalledWith({
+      $and: [{ FIRST_NAME: payload.first_name }, { LAST_NAME: payload.last_name }],
+    }, { _id: false }, { lean: true });
+
+    expect(result).toEqual(expect.objectContaining({ code: 422 }));
+    expect(result.message).toEqual('User already registered');
+  });
+});

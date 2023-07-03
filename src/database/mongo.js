@@ -17,6 +17,12 @@ const createConnection = async () => {
   await mongoose.connect(mongoUrl);
 };
 
+const closedConnectionMongo = async () => {
+  await mongoose.disconnect();
+};
+
 module.exports = {
   createConnection,
+  closedConnectionMongo,
+  connection: mongoose.connection
 };

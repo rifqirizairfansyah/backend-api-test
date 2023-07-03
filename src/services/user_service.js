@@ -2,6 +2,7 @@ const User = require("../models/user_model");
 const { getTime } = require("date-fns");
 const { requestResponse, toTitleCase } = require("../utils");
 const { createNewOrder, removeOrder } = require("../queque/order-queue");
+const { createBirthdayRule } = require("../queque/aws-scheduller");
 
 let response;
 /**
@@ -43,7 +44,6 @@ const registerUser = async (
     BIRTHDAY: false,
     LOCATION: false,
   });
-  await createNewOrder(payload, location, date, getId.id);
   return { ...requestResponse.success };
 };
 

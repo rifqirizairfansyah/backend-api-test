@@ -1,11 +1,6 @@
+# package directories
 node_modules
-desktop.ini
-iisnode/
-test.js
-uploads_image/
-.env
-.idea
-*.key
-*.xlsx
-.vscode/
-.idea/
+jspm_packages
+
+# Serverless directories
+.serverless
