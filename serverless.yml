@@ -1,49 +1,69 @@
-service: backend-api-test
+service: backend-erin-scheduler
 frameworkVersion: "3"
 
 provider:
   name: aws
   runtime: nodejs18.x
-  stage: dev
+  stage: prod
   region: us-east-1
-  memorySize: 256
+  memorySize: 1024
   timeout: 15
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - events:PutEvents
+            - events:PutRule
+            - events:PutTargets
+          Resource: 
+            - arn:aws:events:us-east-1:452999660372:event-bus/default
+            - arn:aws:events:us-east-1:452999660372:rule/erin-*
+
 
 plugins:
+  - serverless-offline
   - serverless-dotenv-plugin
-# you can add statements to the Lambda function's IAM Role here
-#  iam:
-#    role:
-#      statements:
-#        - Effect: "Allow"
-#          Action:
-#            - "s3:ListBucket"
-#          Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#        - Effect: "Allow"
-#          Action:
-#            - "s3:PutObject"
-#          Resource:
-#            Fn::Join:
-#              - ""
-#              - - "arn:aws:s3:::"
-#                - "Ref" : "ServerlessDeploymentBucket"
-#                - "/*"
 
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
-# you can add packaging information here
-#package:
-#  patterns:
-#    - '!exclude-me.js'
-#    - '!exclude-me-dir/**'
-#    - include-me.js
-#    - include-me-dir/**
+resources:
+  Resources:
+    RuleCreateEvent:
+      Type: AWS::Events::Rule
+      Properties:
+        EventBusName: default
+        Name: 'erin-event' 
+        EventPattern:
+          source:
+            - backend-erin-api
+          detail-type:
+            - send-email
+          detail:
+            first_name:
+              - string
+            last_name:
+              - string
+            
+    EventScheduleRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: EventScheduleRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - scheduler.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/AmazonEventBridgeSchedulerFullAccess
 
 functions:
   api:
     handler: handler.api
+    destinations:
+      onSuccess: arn:aws:events:us-east-1:452999660372:event-bus/default
     events: 
       - http: 
           path: /
@@ -53,19 +73,37 @@ functions:
           path: /{proxy+}
           method: ANY
           cors: true
+
     environment:
       NODE_ENV: development
       PORT: 5026
-      MONGO_DEV: ${env:MONGO_DEV}
-      MONGO_PROD: ${env:MONGO_PROD}
-      REDIS_HOST:  ${env:REDIS_HOST}
-      REDIS_PORT: ${env:REDIS_PORT}
-      REDIS_USERNAME: ${env:REDIS_USERNAME}
-      REDIS_PASSWORD: ${env:REDIS_PASSWORD}
-      MAIL_PRODUCTIONS: ${env:MAIL_PRODUCTIONS}
-      MAIL_DEV: ${env:MAIL_DEV}
-      SMTP_USERNAME: ${env:SMTP_USERNAME}
-      SMTP_PASSWORD: ${env:SMTP_PASSWORD}
+      MONGO_DEV: mongodb+srv://admin:admin@developmentdatabase.6twbbjd.mongodb.net/?retryWrites=true&w=majority
+      MONGO_PROD: mongodb+srv://admin:admin@developmentdatabase.6twbbjd.mongodb.net/?retryWrites=true&w=majority
+      REDIS_HOST: redis-19949.c292.ap-southeast-1-1.ec2.cloud.redislabs.com
+      REDIS_PORT: 19949
+      REDIS_USERNAME: default
+      REDIS_PASSWORD: wcP9VpuCt8eEMoIVSsME7zQgVozVyYf8
+
+      MAIL_PRODUCTIONS: https://email-service.digitalenvision.com.au
+      MAIL_DEV: https://email-service.digitalenvision.com.au
+      SMTP_USERNAME: dashawn.haley54@ethereal.email
+      SMTP_PASSWORD: vq7pKfBj8AbCy5qZmC
+
+  sendEmail:
+    handler: handler.mailer
+    events:
+      - eventBridge:
+          eventBus: default
+          description: sending a mail
+          pattern:
+            detail:
+              first_name:
+                - string
+              last_name:
+                - string
+          
+
+  
   
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

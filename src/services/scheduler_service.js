@@ -1,7 +1,7 @@
 const User = require("../models/user_model");
 const { getTime } = require("date-fns");
 const { requestResponse, toTitleCase } = require("../utils");
-const { createBirthdayRule, deleteBirthdayRule } = require("../queque/aws-scheduller");
+const { createEvent, deleteEvent } = require("../queque/aws-scheduler");
 
 const scheduleEvent = async (
   first_name,
@@ -10,7 +10,7 @@ const scheduleEvent = async (
 ) => {
   try {
     const date = getTime(new Date(birthday));
-    await createBirthdayRule(first_name, date, location);
+    await createEvent(first_name, date, location);
     
     return { ...requestResponse.success };
   } catch (error) {
@@ -22,7 +22,7 @@ const deleteScheduleEvent = async (
   first_name
 ) => {
   try {
-    await deleteBirthdayRule(first_name);
+    await deleteEvent(first_name);
     
     return { ...requestResponse.success };
   } catch (error) {

@@ -1,5 +1,5 @@
 const userService = require("../services/user_service");
-const schedulerService = require("../services/scheduller_service");
+const schedulerService = require("../services/scheduler_service");
 const logger = require("../utils/logger");
 const {
   requestResponse
