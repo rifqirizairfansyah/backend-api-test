@@ -26,7 +26,7 @@ const createEvent = async (firstName, birthday, timezone, type) => {
       Input: JSON.stringify({ 
           first_name: firstName,
           last_name: firstName,
-          type: 'Birthday'
+          type: type
        }),
       RoleArn: 'arn:aws:iam::452999660372:role/EventScheduleRole'
     },
