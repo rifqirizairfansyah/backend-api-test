@@ -18,13 +18,17 @@ const createEvent = async (firstName, birthday, timezone, type) => {
     Description: `Send ${type} email to user ${firstName} at 9 AM in their timezone`,
     Target: {
       Id: "birthday-email-target",
-      Arn: "arn:aws:sqs:us-east-1:452999660372:email_queue",
+      Arn: "arn:aws:events:us-east-1:452999660372:event-bus/default",
+      EventBridgeParameters: {
+        DetailType: "email",
+        Source: "myapp.erin",
+      },
       Input: JSON.stringify({ 
           first_name: firstName,
           last_name: firstName,
           type: 'Birthday'
        }),
-      RoleArn: 'arn:aws:iam::452999660372:role/erin-event'
+      RoleArn: 'arn:aws:iam::452999660372:role/EventScheduleRole'
     },
     ScheduleExpressionTimezone: timezone,
     FlexibleTimeWindow: {
@@ -37,11 +41,14 @@ const createEvent = async (firstName, birthday, timezone, type) => {
     logger.info(
       `Success Create Scheduller`
     );
+
+    return ruleName
 };
 
-const deleteEvent = async (firstName) => {
-  const ruleName = `birthday_${firstName}`;
+const deleteEvent = async (event) => {
+  const ruleName = event;
 
+  console.log(ruleName)
   const command = new DeleteScheduleCommand({
     Name: ruleName,
   });

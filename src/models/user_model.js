@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
     BIRTHDAY: String,
     LOCATION: String,
     TYPE: String,
+    EVENT: Array
   },
   {
     versionKey: false,

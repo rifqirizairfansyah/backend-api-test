@@ -1,20 +1,16 @@
 const { registerUser } = require('../services/user_service'); 
 const User = require('../models/user_model');
-const { createNewOrder, closeConnection } = require('../queque/order-queue');
 
 jest.mock('../models/user_model'); 
-jest.mock('../queque/order-queue'); 
 
 describe('registerUser', () => {
   beforeEach(() => {
     User.findOne.mockClear();
     User.create.mockClear();
     User.findOne.mockResolvedValue(null);
-    createNewOrder.mockClear();
   });
 
   afterEach(async () => {
-    await closeConnection();
   });
 
   it('should register a new user and create an order', async () => {
@@ -28,8 +24,6 @@ describe('registerUser', () => {
   
     User.findOne.mockResolvedValue(null);
     User.create.mockResolvedValue({});
-    const mockCreateNewOrder = jest.fn();
-    createNewOrder.mockImplementation(mockCreateNewOrder);
   
     await registerUser(
       payload.first_name,

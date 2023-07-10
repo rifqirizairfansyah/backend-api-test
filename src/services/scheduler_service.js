@@ -6,23 +6,21 @@ const { createEvent, deleteEvent } = require("../queque/aws-scheduler");
 const scheduleEvent = async (
   first_name,
   birthday,
-  location
+  location,
+  type
 ) => {
-  try {
     const date = getTime(new Date(birthday));
-    await createEvent(first_name, date, location);
-    
-    return { ...requestResponse.success };
-  } catch (error) {
-    return { ...requestResponse.unprocessable_entity };
-  }
+    return await createEvent(first_name, date, location, type);
 };
 
 const deleteScheduleEvent = async (
-  first_name
+  events
 ) => {
   try {
-    await deleteEvent(first_name);
+
+    for (const event of events) {
+      await deleteEvent(event.ID_SCHEDULER_EVENT);
+    }
     
     return { ...requestResponse.success };
   } catch (error) {

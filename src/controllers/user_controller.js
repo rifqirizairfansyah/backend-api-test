@@ -11,7 +11,9 @@ const create = async (req, res) => {
   const { first_name, last_name, birthday, location, type } = req.body;
   try {
     const user = await userService.registerUser(first_name, last_name, birthday, location, type);
-    schedulerService.scheduleEvent(first_name, birthday, location)
+    const ruleId = await schedulerService.scheduleEvent(first_name, birthday, location, type)
+    await userService.createUserEvent(user.data._id, ruleId)
+
     response = { ...user };
   } catch (error) {
     logger.error(error);
@@ -30,7 +32,7 @@ const destroy = async (req, res) => {
     };
 
     const deleteUser = await userService.deleteUser(conditions);
-    schedulerService.deleteScheduleEvent(deleteUser.FIRST_NAME)
+    schedulerService.deleteScheduleEvent(deleteUser.user.EVENT)
 
     response = { ...requestResponse.success };
   } catch (error) {

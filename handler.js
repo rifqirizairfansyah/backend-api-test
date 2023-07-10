@@ -14,13 +14,13 @@ module.exports.mailer = async (event) => {
         pass: process.env.SMTP_PASSWORD
     }
   });
-  console.log(event)
+  
   try {
         await transporter.sendMail({
           from: `erin@gmail.com`,
-          to: `${event.name}@gmail.com`,
-          subject: `Hey this is your ${event.type}`,
-          text: `${event.message}.`,
+          to: `${event.detail.first_name}@gmail.com`,
+          subject: `Hey this is your ${event.detail.type}`,
+          text: `Happy ${event.detail.type} ${event.detail.first_name} ${event.detail.last_name}.`,
         });
     
 

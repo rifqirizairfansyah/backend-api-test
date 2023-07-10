@@ -1,8 +1,6 @@
 const User = require("../models/user_model");
 const { getTime } = require("date-fns");
 const { requestResponse, toTitleCase } = require("../utils");
-const { createNewOrder, removeOrder } = require("../queque/order-queue");
-const { createBirthdayRule } = require("../queque/aws-scheduler");
 
 let response;
 /**
@@ -37,15 +35,25 @@ const registerUser = async (
   };
 
   await User.create(payload);
-  const getId = await User.findOne(payload, {
+  const createdUser = await User.findOne(payload, {
     _id: true,
     FIRST_NAME: false,
     LAST_NAME: false,
     BIRTHDAY: false,
     LOCATION: false,
   });
-  return { ...requestResponse.success };
+  return { ...requestResponse.success, data: createdUser };
 };
+
+const createUserEvent = (userId, event) => {
+  return User.updateOne({ _id: userId}, { 
+    $push: {
+      EVENT: {
+        ID_SCHEDULER_EVENT: event
+      }
+    }
+  });
+}
 
 /**
  * @function findUserByEmail
@@ -89,4 +97,5 @@ const deleteUser = async (id) => {
 module.exports = {
   registerUser,
   deleteUser,
+  createUserEvent
 };
