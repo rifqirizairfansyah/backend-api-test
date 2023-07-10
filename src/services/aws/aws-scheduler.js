@@ -1,6 +1,6 @@
 const { SchedulerClient, CreateScheduleCommand, DeleteScheduleCommand } = require("@aws-sdk/client-scheduler");
 const { getDate, getMonth, parseISO } = require("date-fns");
-const logger = require("../utils/logger");
+const logger = require("../../utils/logger");
 const { v4: uuidv4 } = require('uuid');
 
 const client = new SchedulerClient({ region: "us-east-1" });
@@ -39,7 +39,7 @@ const createEvent = async (firstName, birthday, timezone, type) => {
     const command = new CreateScheduleCommand(rule);
     await client.send(command);
     logger.info(
-      `Success Create Scheduller`
+      `Success Create Scheduler`
     );
 
     return ruleName
@@ -47,8 +47,6 @@ const createEvent = async (firstName, birthday, timezone, type) => {
 
 const deleteEvent = async (event) => {
   const ruleName = event;
-
-  console.log(ruleName)
   const command = new DeleteScheduleCommand({
     Name: ruleName,
   });

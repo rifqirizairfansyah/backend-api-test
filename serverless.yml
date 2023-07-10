@@ -56,6 +56,9 @@ resources:
                 - sts:AssumeRole
         ManagedPolicyArns:
           - arn:aws:iam::aws:policy/AmazonEventBridgeSchedulerFullAccess
+          - arn:aws:iam::aws:policy/AWSLambda_FullAccess
+          - arn:aws:iam::aws:policy/AmazonEventBridgeFullAccess
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
 functions:
   api:
@@ -71,16 +74,11 @@ functions:
           path: /{proxy+}
           method: ANY
           cors: true
-
     environment:
-      NODE_ENV: development
-      PORT: 5026
-      MONGO_DEV: mongodb+srv://admin:admin@developmentdatabase.6twbbjd.mongodb.net/?retryWrites=true&w=majority
-      MONGO_PROD: mongodb+srv://admin:admin@developmentdatabase.6twbbjd.mongodb.net/?retryWrites=true&w=majority
-      MAIL_PRODUCTIONS: https://email-service.digitalenvision.com.au
-      MAIL_DEV: https://email-service.digitalenvision.com.au
-      SMTP_USERNAME: dashawn.haley54@ethereal.email
-      SMTP_PASSWORD: vq7pKfBj8AbCy5qZmC
+      MONGO_DEV: ${env:MONGO_DEV}
+      MONGO_PROD: ${env:MONGO_PROD}
+      SMTP_USERNAME: ${env:SMTP_USERNAME}
+      SMTP_PASSWORD: ${env:SMTP_PASSWORD}
 
   sendEmail:
     handler: handler.mailer
@@ -94,54 +92,3 @@ functions:
             detail-type:
               - mailer
           
-#    The following are a few example events you can configure
-#    NOTE: Please make sure to change your handler code to work with those events
-#    Check the event documentation for details
-#    events:
-#      - httpApi:
-#          path: /users/create
-#          method: get
-#      - websocket: $connect
-#      - s3: ${env:BUCKET}
-#      - schedule: rate(10 minutes)
-#      - sns: greeter-topic
-#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
-#      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
-#      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
-#      - iot:
-#          sql: "SELECT * FROM 'some_topic'"
-#      - cloudwatchEvent:
-#          event:
-#            source:
-#              - "aws.ec2"
-#            detail-type:
-#              - "EC2 Instance State-change Notification"
-#            detail:
-#              state:
-#                - pending
-#      - cloudwatchLog: '/aws/lambda/hello'
-#      - cognitoUserPool:
-#          pool: MyUserPool
-#          trigger: PreSignUp
-#      - alb:
-#          listenerArn: arn:aws:elasticloadbalancing:us-east-1:XXXXXX:listener/app/my-load-balancer/50dc6c495c0c9188/
-#          priority: 1
-#          conditions:
-#            host: example.com
-#            path: /hello
-
-#    Define function environment variables here
-#    environment:
-#      variable2: value2
-
-# you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
