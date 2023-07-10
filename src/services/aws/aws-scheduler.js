@@ -17,7 +17,7 @@ const createEvent = async (firstName, birthday, timezone, type) => {
     State: "ENABLED",
     Description: `Send ${type} email to user ${firstName} at 9 AM in their timezone`,
     Target: {
-      Id: "birthday-email-target",
+      Id: uniqueId,
       Arn: "arn:aws:events:us-east-1:452999660372:event-bus/default",
       EventBridgeParameters: {
         DetailType: "email",

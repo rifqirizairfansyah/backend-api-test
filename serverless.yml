@@ -37,9 +37,9 @@ resources:
         Name: 'erin-event' 
         EventPattern:
           source:
-            - backend-erin-api
+            - myapp.erin
           detail-type:
-            - send-email
+            - email
             
     EventScheduleRole:
       Type: AWS::IAM::Role
@@ -74,11 +74,12 @@ functions:
           path: /{proxy+}
           method: ANY
           cors: true
+
     environment:
-      MONGO_DEV: ${env:MONGO_DEV}
-      MONGO_PROD: ${env:MONGO_PROD}
-      SMTP_USERNAME: ${env:SMTP_USERNAME}
-      SMTP_PASSWORD: ${env:SMTP_PASSWORD}
+      MONGO_DEV: mongodb+srv://admin:admin@developmentdatabase.6twbbjd.mongodb.net/?retryWrites=true&w=majority
+      MONGO_PROD: mongodb+srv://admin:admin@developmentdatabase.6twbbjd.mongodb.net/?retryWrites=true&w=majority
+      SMTP_USERNAME: dashawn.haley54@ethereal.email
+      SMTP_PASSWORD: vq7pKfBj8AbCy5qZmC
 
   sendEmail:
     handler: handler.mailer
@@ -88,7 +89,7 @@ functions:
           description: sending a mail
           pattern:
             source:
-              - backend-erin-api
+              - myapp.erin
             detail-type:
-              - mailer
+              - email
           

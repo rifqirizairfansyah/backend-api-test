@@ -14,7 +14,7 @@ module.exports.mailer = async (event) => {
         pass: process.env.SMTP_PASSWORD
     }
   });
-  
+
   try {
         await transporter.sendMail({
           from: `erin@gmail.com`,
@@ -22,10 +22,9 @@ module.exports.mailer = async (event) => {
           subject: `Hey this is your ${event.detail.type}`,
           text: `Happy ${event.detail.type} ${event.detail.first_name} ${event.detail.last_name}.`,
         });
-    
-
+        
     return {
-      statusCode: 280
+      statusCode: 200
     }
   } catch (error) {
     throw new Error(error);
